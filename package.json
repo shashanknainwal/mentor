@@ -1,0 +1,72 @@
+{
+  "name": "mentor-desktop",
+  "productName": "Mentor Desktop",
+  "version": "0.1.0",
+  "description": "Mentor Desktop - AI assistant for KPMG Advisory (Electron + React + Python engine on AWS Bedrock)",
+  "private": true,
+  "main": "electron/main.cjs",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n engine,ui,app -c blue,magenta,green \"npm:dev:engine\" \"npm:dev:ui\" \"npm:dev:electron\"",
+    "dev:engine": "node scripts/run-engine.mjs",
+    "dev:ui": "vite",
+    "dev:electron": "wait-on tcp:5173 && cross-env MENTOR_DEV=1 MENTOR_EXTERNAL_ENGINE=1 electron .",
+    "web": "concurrently -k -n engine,ui \"npm:dev:engine\" \"npm:dev:ui\"",
+    "build": "vite build",
+    "test": "npm run test:engine",
+    "test:engine": "node scripts/run-engine.mjs --test",
+    "dist": "npm run build && electron-builder",
+    "setup:engine": "node scripts/setup-engine.mjs"
+  },
+  "build": {
+    "appId": "com.kpmg.mentor",
+    "productName": "Mentor Desktop",
+    "files": [
+      "dist/**",
+      "electron/**",
+      "assets/**",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "engine",
+        "to": "engine",
+        "filter": [
+          "**/*",
+          "!**/__pycache__/**",
+          "!tests/**"
+        ]
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.png"
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.productivity",
+      "icon": "assets/icon.png"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/icon.png"
+    }
+  },
+  "dependencies": {
+    "lucide-react": "^1.49.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.1",
+    "concurrently": "^10.0.5",
+    "cross-env": "^10.1.0",
+    "electron": "^44.5.1",
+    "electron-builder": "^26.15.3",
+    "vite": "^8.3.1",
+    "wait-on": "^9.5.1"
+  }
+}

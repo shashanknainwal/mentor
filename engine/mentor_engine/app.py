@@ -88,7 +88,11 @@ async def patch_settings(patch: dict[str, Any]):
         if patch.get("model", {}).get(k) == "********":
             patch["model"].pop(k)
     patch.pop("routing", None)  # routing is engine-managed
+    overrides = patch.get("security", {}).get("tool_overrides")
     settings.update(patch)
+    if overrides is not None:  # replace (not merge) so removed overrides stay removed
+        settings._data["security"]["tool_overrides"] = overrides
+        settings.save()
     logging.getLogger().setLevel(logging.DEBUG if settings.get("debug") else logging.INFO)
     return settings.sanitized()
 
@@ -755,6 +759,11 @@ async def artifact_stats():
     return artifacts.stats()
 
 
+@app.get("/api/artifacts/{aid}")
+async def get_artifact(aid: str):
+    return db.get("artifacts", aid) or _404()
+
+
 @app.get("/api/artifacts/{aid}/file")
 async def artifact_file(aid: str, download: bool = False):
     a = db.get("artifacts", aid) or _404()
@@ -936,6 +945,11 @@ async def support_bundle():
     path = settings.home / "bundles" / f"mentor-support-{time.strftime('%Y%m%d-%H%M%S')}.zip"
     path.write_bytes(_bundle_bytes())
     return {"path": str(path), "size": path.stat().st_size}
+
+
+@app.get("/api/issues")
+async def list_issues():
+    return db.list("issues", order="created DESC")
 
 
 @app.post("/api/issues")

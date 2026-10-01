@@ -62,6 +62,17 @@ async def project_search(args, ctx):
     return "\n\n".join(f"[{h['source_name']}] {h['text'][:1200]}" for h in hits) or "No matching content."
 
 
+@tool("create_project",
+      "Create a project (templates: client_engagement, due_diligence, proposal, internal, blank). "
+      "Use when the user asks to set up a project or a sample project.",
+      obj(["name"], name=s("Project name"), template=s("Template id"), description=s("One-line description"),
+          instructions=s("Standing instructions applied when the project is mentioned")),
+      risk="medium", category="Knowledge")
+async def create_project(args, ctx):
+    p = knowledge.project_create(args)
+    return f"Created project '{p['name']}' (@{p['slug']}, id {p['id']}). Add files in Projects, then type @{p['slug']} in chat."
+
+
 @tool("list_projects", "List the user's projects and @-mentionable folders.", obj(), category="Knowledge")
 async def list_projects(args, ctx):
     return [{"id": p["id"], "name": p["name"], "description": p.get("description", ""), "files": p.get("file_count", 0),
