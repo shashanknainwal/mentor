@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agentic AI Playbook</title>
+  <meta name="description" content="A hands-on, browser-based course for building production AI agents: security, tools, memory, reasoning, evaluation, and enterprise deployment." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script>
+    // Apply saved theme before paint to avoid a flash.
+    try {
+      const s = JSON.parse(localStorage.getItem('agentic-playbook:v1') || '{}');
+      if (s.theme) document.documentElement.dataset.theme = s.theme;
+    } catch {}
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js" defer></script>
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open navigation">☰</button>
+    <a class="brand" href="#/"><span class="brand-mark">A</span><span>Agentic AI Playbook</span></a>
+    <span class="spacer"></span>
+    <span class="pill hide-sm" id="progressPill">0% complete</span>
+    <span class="pill" id="pyStatus" title="In-browser Python (Pyodide)"><span class="dot"></span><span class="txt">Python idle</span></span>
+    <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">◐</button>
+  </header>
+  <div class="layout">
+    <nav class="sidebar" id="sidebar" aria-label="Course navigation"></nav>
+    <main id="main" tabindex="-1"></main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <noscript><p style="padding:24px">This course needs JavaScript to run Python in your browser.</p></noscript>
+</body>
+</html>
